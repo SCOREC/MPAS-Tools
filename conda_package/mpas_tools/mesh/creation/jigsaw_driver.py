@@ -41,6 +41,8 @@ def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
     # -------
     # Mark Petersen, Phillip Wolfram, Xylar Asay-Davis
 
+    print("----foo")
+
     # setup files for JIGSAW
     opts = jigsawpy.jigsaw_jig_t()
     opts.geom_file = 'mesh.msh'
