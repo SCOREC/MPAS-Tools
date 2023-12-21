@@ -9,7 +9,7 @@ from mpas_tools.logging import check_call
 
 
 def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
-                  geom_points=None, geom_edges=None, geom_edges_interior=None, logger=None):
+                  geom_points=None, geom_edges=None, geom_bounds=None, logger=None):
     """
     A function for building a jigsaw mesh
 
@@ -29,14 +29,14 @@ def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
         Earth radius in meters
 
     geom_points : ndarray, optional
-        list of point coordinates for bounding polygon for planar mesh
+        list of point coordinates for geometric model vertices
 
     geom_edges : ndarray, optional
-        list of edges between points in geom_points that define the bounding polygon
-
-    geom_edges_interior : ndarray, optional
         list of edges between points in geom_points that define geometric
-        features within the bounding polygon defined by geom_edges
+        model edges
+
+    geom_bounds : ndarray, optional
+        list of geometric model entities that define bounding geometric features
 
     logger : logging.Logger, optional
         A logger for the output if not stdout
@@ -75,8 +75,8 @@ def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
     else:
        geom.mshID = 'EUCLIDEAN-MESH'
        geom.vert2 = geom_points
-       geom.bound = geom_edges
-       geom.edge2 = geom_edges_interior
+       geom.edge2 = geom_edges
+       geom.bound = geom_bounds
     jigsawpy.savemsh(opts.geom_file, geom)
 
     # build mesh via JIGSAW!

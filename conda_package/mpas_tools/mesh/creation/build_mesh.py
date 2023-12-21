@@ -107,7 +107,7 @@ def build_spherical_mesh(cellWidth, lon, lat, earth_radius,
 
 
 def build_planar_mesh(cellWidth, x, y, geom_points, geom_edges,
-                      geom_edges_interior=None,
+                      geom_bounds=None,
                       out_filename='base_mesh.nc', logger=None):
     """
     Build a planar MPAS mesh
@@ -121,16 +121,14 @@ def build_planar_mesh(cellWidth, x, y, geom_points, geom_edges,
         arrays defining planar coordinates in meters
 
     geom_points : ndarray
-        list of point coordinates for bounding polygon for the planar mesh
+        list of point coordinates for geometric model vertices
 
     geom_edges : ndarray
-        list of edges between points in ``geom_points`` that define the
-        bounding polygon
+        list of edges between points in ``geom_points``
 
-    geom_edges_interior : ndarray, optional
-        list of edges between points in ``geom_points`` that define
-        geometric model features within the bounding polygon defined by
-        ``geom_edges``
+    geom_bounds : ndarray, optional
+        list of bounding geometric model entities
+        from ``geom_edges`` that define bounding geometry
 
     out_filename : str, optional
         The file name of the resulting MPAS mesh
@@ -151,7 +149,7 @@ def build_planar_mesh(cellWidth, x, y, geom_points, geom_edges,
         logger.info('Step 1. Generate mesh with JIGSAW')
         jigsaw_driver(cellWidth, x, y, on_sphere=False,
                       geom_points=geom_points, geom_edges=geom_edges,
-                      geom_edges_interior=geom_edges_interior,
+                      geom_bounds=geom_bounds,
                       logger=logger)
 
         logger.info('Step 2. Convert triangles from jigsaw format to netcdf')
