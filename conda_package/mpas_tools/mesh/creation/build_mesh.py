@@ -150,6 +150,7 @@ def build_planar_mesh(cellWidth, x, y, geom_points, geom_edges,
         jigsaw_driver(cellWidth, x, y, on_sphere=False,
                       geom_points=geom_points, geom_edges=geom_edges,
                       geom_bounds=geom_bounds,
+                      write_vtk=True,
                       logger=logger)
 
         logger.info('Step 2. Convert triangles from jigsaw format to netcdf')
