@@ -9,7 +9,8 @@ from mpas_tools.logging import check_call
 
 
 def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
-                  geom_points=None, geom_edges=None, geom_bounds=None, logger=None):
+                  geom_points=None, geom_edges=None, geom_bounds=None,
+                  write_vtk=False, logger=None):
     """
     A function for building a jigsaw mesh
 
@@ -89,3 +90,8 @@ def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
 
     savejig(opts.jcfg_file, opts)
     check_call(['jigsaw', opts.jcfg_file], logger=logger)
+  
+    if write_vtk:
+       mesh = jigsawpy.jigsaw_msh_t()
+       jigsawpy.loadmsh(opts.mesh_file, mesh)
+       jigsawpy.savevtk("mesh.vtk", mesh)
