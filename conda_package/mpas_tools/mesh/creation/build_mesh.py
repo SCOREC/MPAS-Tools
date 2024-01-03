@@ -107,7 +107,7 @@ def build_spherical_mesh(cellWidth, lon, lat, earth_radius,
 
 
 def build_planar_mesh(cellWidth, x, y, geom_points, geom_edges,
-                      geom_bounds=None,
+                      geom_bounds=None, preserve_geometry=False,
                       out_filename='base_mesh.nc', logger=None):
     """
     Build a planar MPAS mesh
@@ -130,6 +130,10 @@ def build_planar_mesh(cellWidth, x, y, geom_points, geom_edges,
         list of bounding geometric model entities
         from ``geom_edges`` that define bounding geometry
 
+    preserve_geometry : logical, optional
+        set to ``True`` to ensure that all geometric model entities are
+        represetnted in the mesh
+
     out_filename : str, optional
         The file name of the resulting MPAS mesh
 
@@ -150,6 +154,7 @@ def build_planar_mesh(cellWidth, x, y, geom_points, geom_edges,
         jigsaw_driver(cellWidth, x, y, on_sphere=False,
                       geom_points=geom_points, geom_edges=geom_edges,
                       geom_bounds=geom_bounds,
+                      preserve_geometry=preserve_geometry,
                       write_vtk=True,
                       logger=logger)
 

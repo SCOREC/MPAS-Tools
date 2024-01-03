@@ -10,7 +10,7 @@ from mpas_tools.logging import check_call
 
 def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
                   geom_points=None, geom_edges=None, geom_bounds=None,
-                  write_vtk=False, logger=None):
+                  preserve_geometry=False, write_vtk=False, logger=None):
     """
     A function for building a jigsaw mesh
 
@@ -38,6 +38,16 @@ def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
 
     geom_bounds : ndarray, optional
         list of geometric model entities that define bounding geometric features
+
+    preserve_geometry : logical, optional
+        by default Jigsaw does not ensure that all model entities have a mesh
+        entitiy associated with them (i.e., a mesh vertex at the location of
+        each model vertex).  Setting this option to `True` will ensure that all
+        model entities are represented in the mesh via Jigsaw's `mesh_top1`
+        option.
+
+    write_vtk : logical, optional
+        write the triangular mesh to a VTK file for vizualization in ParaView
 
     logger : logging.Logger, optional
         A logger for the output if not stdout
@@ -87,6 +97,7 @@ def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
     opts.mesh_dims = +2  # 2-dim. simplexes
     opts.optm_qlim = 0.9375
     opts.verbosity = +1
+    opts.mesh_top1 = preserve_geometry
 
     savejig(opts.jcfg_file, opts)
     check_call(['jigsaw', opts.jcfg_file], logger=logger)
