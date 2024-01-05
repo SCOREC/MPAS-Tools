@@ -56,8 +56,6 @@ def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
     # -------
     # Mark Petersen, Phillip Wolfram, Xylar Asay-Davis
 
-    print("----foo")
-
     # setup files for JIGSAW
     opts = jigsawpy.jigsaw_jig_t()
     opts.geom_file = 'mesh.msh'
@@ -98,6 +96,7 @@ def jigsaw_driver(cellWidth, x, y, on_sphere=True, earth_radius=6371.0e3,
     opts.optm_qlim = 0.9375
     opts.verbosity = +1
     opts.mesh_top1 = preserve_geometry
+    opts.geom_feat = preserve_geometry
 
     savejig(opts.jcfg_file, opts)
     check_call(['jigsaw', opts.jcfg_file], logger=logger)
