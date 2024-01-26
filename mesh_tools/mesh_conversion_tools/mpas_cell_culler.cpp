@@ -780,6 +780,7 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
 	NcVar *xCellVar, *yCellVar, *zCellVar, *xEdgeVar, *yEdgeVar, *zEdgeVar, *xVertexVar, *yVertexVar, *zVertexVar;
 	NcVar *lonCellVar, *latCellVar, *lonEdgeVar, *latEdgeVar, *lonVertexVar, *latVertexVar;
 	NcVar *idx2cellVar, *idx2edgeVar, *idx2vertexVar;
+        NcVar *idCellVar;
 
 	int i, idx_map;
 
@@ -793,6 +794,7 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
 	zOld = new double[nCells];
 	latOld = new double[nCells];
 	lonOld = new double[nCells];
+	idCellOld = new double[nCells];
 
 	xNew = new double[nCellsNew];
 	yNew = new double[nCellsNew];
@@ -800,9 +802,11 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
 	latNew = new double[nCellsNew];
 	lonNew = new double[nCellsNew];
 	idxToNew = new int[nCellsNew];
+	idCellNew = new double[nCellsNew];
 
 	netcdf_mpas_read_xyzcell ( inputFilename, nCells, xOld, yOld, zOld );
 	netcdf_mpas_read_latloncell ( inputFilename, nCells, latOld, lonOld );
+	netcdf_mpas_read_idcell ( inputFilename, nCells, idCellOld );
 
 	idx_map = 0;
 	for(int iCell = 0; iCell < nCells; iCell++){
@@ -812,6 +816,7 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
 			zNew[idx_map] = zOld[iCell];
 			latNew[idx_map] = latOld[iCell];
 			lonNew[idx_map] = lonOld[iCell];
+			idCellNew[idx_map] = idCellOld[iCell];
 			idxToNew[idx_map] = idx_map+1;
 			idx_map++;
 		}
@@ -827,6 +832,8 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
 	if (!yCellVar->put(yNew,nCellsNew)) return NC_ERR;
 	if (!(zCellVar = grid.add_var("zCell", ncDouble, nCellsDim))) return NC_ERR;
 	if (!zCellVar->put(zNew,nCellsNew)) return NC_ERR;
+	if (!(idCellVar = grid.add_var("idCell", ncInt, nCellsDim))) return NC_ERR;
+	if (!idCellVar->put(idcellsNew,nCellsNew)) return NC_ERR;
 	if (!(idx2cellVar = grid.add_var("indexToCellID", ncInt, nCellsDim))) return NC_ERR;
 	if (!idx2cellVar->put(idxToNew,nCellsNew)) return NC_ERR;
 	delete[] xOld;
@@ -834,6 +841,7 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
 	delete[] zOld;
 	delete[] latOld;
 	delete[] lonOld;
+	delete[] idCellOld;
 
 	delete[] xNew;
 	delete[] yNew;
@@ -841,6 +849,7 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
 	delete[] latNew;
 	delete[] lonNew;
 	delete[] idxToNew;
+	delete[] idCellNew;
 
 	//Build and write edge coordinate arrays
 	xOld = new double[nEdges];
