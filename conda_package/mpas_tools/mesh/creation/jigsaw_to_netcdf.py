@@ -51,10 +51,12 @@ def jigsaw_to_netcdf(msh_filename, output_name, on_sphere, sphere_radius=None):
     xCell_full = msh['POINT'][:, 0]
     yCell_full = msh['POINT'][:, 1]
     zCell_full = []
+    idCell_full = msh['POINT'][:, msh['NDIMS'] ]
     if msh['NDIMS'] == 3:
         zCell_full = msh['POINT'][:, 2]
     else:
         zCell_full = np.zeros(yCell_full.shape)
+
     for cells in [xCell_full, yCell_full, zCell_full]:
         assert cells.shape[0] == nCells, 'Number of anticipated nodes is' \
                                          ' not correct!'
@@ -113,6 +115,8 @@ def jigsaw_to_netcdf(msh_filename, output_name, on_sphere, sphere_radius=None):
     var[:] = yCell_full
     var = grid.createVariable('zCell', 'f8', ('nCells',))
     var[:] = zCell_full
+    var = grid.createVariable('idCell', 'i4', ('nCells',))
+    var[:] = idCell_full
     var = grid.createVariable('xVertex', 'f8', ('nVertices',))
     var[:] = xVertex_full
     var = grid.createVariable('yVertex', 'f8', ('nVertices',))

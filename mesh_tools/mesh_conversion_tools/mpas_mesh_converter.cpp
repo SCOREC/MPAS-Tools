@@ -45,6 +45,7 @@ string in_parent_id = "";
 // Connectivity and location information {{{
 
 vector<pnt> cells;
+vector<int> idcells;
 vector<pnt> edges;
 vector<pnt> vertices;
 vector<int> completeCellMask;
@@ -289,6 +290,7 @@ int readGridInput(const string inputFilename){/*{{{*/
 	int nCells, nVertices, vertexDegree;
 	double *xcell, *ycell,*zcell;
 	double *xvertex, *yvertex,*zvertex;
+	int *idcell;
 	int *cellsonvertex_list;
 	pnt new_location;
 
@@ -369,8 +371,10 @@ int readGridInput(const string inputFilename){/*{{{*/
 	xcell = new double[nCells];
 	ycell = new double[nCells];
 	zcell = new double[nCells];
+	idcells.reserve(nCells);
 
 	netcdf_mpas_read_xyzcell ( inputFilename, nCells, xcell, ycell, zcell );
+	netcdf_mpas_read_idcell ( inputFilename, nCells, idcells.data() );
 
 	cells.clear();
 	for(int i = 0; i < nCells; i++){
@@ -2504,6 +2508,7 @@ int outputGridCoordinates( const string outputFilename) {/*{{{*/
 	NcVar *xCellVar, *yCellVar, *zCellVar, *xEdgeVar, *yEdgeVar, *zEdgeVar, *xVertexVar, *yVertexVar, *zVertexVar;
 	NcVar *lonCellVar, *latCellVar, *lonEdgeVar, *latEdgeVar, *lonVertexVar, *latVertexVar;
 	NcVar *idx2cellVar, *idx2edgeVar, *idx2vertexVar;
+        NcVar *idCellVar;
 
 	int i;
 	
@@ -2546,6 +2551,8 @@ int outputGridCoordinates( const string outputFilename) {/*{{{*/
 	if (!yCellVar->put(y,nCells)) return NC_ERR;
 	if (!(zCellVar = grid.add_var("zCell", ncDouble, nCellsDim))) return NC_ERR;
 	if (!zCellVar->put(z,nCells)) return NC_ERR;
+	if (!(idCellVar = grid.add_var("idCell", ncInt, nCellsDim))) return NC_ERR;
+	if (!idCellVar->put(idcells.data(),nCells)) return NC_ERR;
 	if (!(idx2cellVar = grid.add_var("indexToCellID", ncInt, nCellsDim))) return NC_ERR;
 	if (!idx2cellVar->put(idxTo,nCells)) return NC_ERR;
 	delete[] x;

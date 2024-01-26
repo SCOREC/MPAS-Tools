@@ -930,6 +930,67 @@ void netcdf_mpas_read_xyzcell ( string filename, int ncells, double xcell[], dou
 
 	return;
 }/*}}}*/
+
+
+void netcdf_mpas_read_idcell ( string filename, int ncells, int idcell[] ) {/*{{{*/
+	//****************************************************************************80
+	//
+	//  Purpose:
+	//
+	//    NETCDF_MPAS_READ_IDCELL reads idCell
+	//
+	//  Licensing:
+	//
+	//    This code is distributed under the GNU LGPL license.
+	//
+	//  Modified:
+	//
+	//    25 January 2024
+	//
+	//  Author:
+	//
+	//    Cameron W. Smith
+	//
+	//  Reference:
+	//
+	//    Russ Rew, Glenn Davis, Steve Emmerson, Harvey Davies, Ed Hartne,
+	//    The NETCDF User's Guide,
+	//    Unidata Program Center, March 2009.
+	//
+	//  Parameters:
+	//
+	//    Input, string NC_FILENAME, the name of the NETCDF file to examine.
+	//
+	//    Input, int NCELLS, the number of nodes.
+	//
+	//    Output, inte IDCELL[NCELLS] the id of the nodes.
+	//
+	NcVar *var_id;
+	//
+	//  Open the file.
+	#ifdef _64BITPERIOD
+		NcFile ncid ( filename.c_str ( ), NcFile::ReadOnly, NULL, 0, NcFile::Period64Bits );
+	#else
+		NcFile ncid ( filename.c_str ( ), NcFile::ReadOnly );
+	#endif
+	//
+	//
+	//  Get the variable values.
+	//
+#ifdef _DEBUG
+	cout << "    Reading idCell" << endl;
+#endif
+	var_id = ncid.get_var ( "idCell" );
+	(*var_id).get ( &idcell[0], ncells );
+	//
+	//  Close the file.
+	//
+	ncid.close ( );
+
+	return;
+}/*}}}*/
+
+
 //****************************************************************************80
 void netcdf_mpas_read_latloncell ( string filename, int ncells, double latcell[], double loncell[] ){/*{{{*/
 
