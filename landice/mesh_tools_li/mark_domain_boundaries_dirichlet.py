@@ -35,7 +35,7 @@ nEdgesOnCell = f.variables['nEdgesOnCell'][:]
 mask[:] = 0
 for i in range(nCells):
    nE = nEdgesOnCell[i]
-   if min(cONc[i, :nE]) == 0:
+   if nE == 0 or min(cONc[i, :nE]) == 0:
       mask[i,:] = 1
 f.variables['dirichletVelocityMask'][options.time, :, :] = mask[:]
 
