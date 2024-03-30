@@ -44,6 +44,7 @@ string in_parent_id = "";
 // Connectivity and location information {{{
 
 vector<pnt> cells;
+vector<pnt> idcells;
 vector<pnt> edges;
 vector<pnt> vertices;
 vector<int> completeCellMask;
@@ -402,10 +403,12 @@ int readGridInput(const string inputFilename){/*{{{*/
     xcell = new double[nCells];
     ycell = new double[nCells];
     zcell = new double[nCells];
+    idcells.reserve(nCells);
 
     ncutil::get_var(inputFilename, "xCell", xcell);
     ncutil::get_var(inputFilename, "yCell", ycell);
     ncutil::get_var(inputFilename, "zCell", zcell);
+    ncutil::get_var(inputFilename, "idCell", idcells.data());
 
     cells.clear();
     for(int i = 0; i < nCells; i++){
@@ -2555,6 +2558,11 @@ int outputGridCoordinates( const string outputFilename) {/*{{{*/
     ncutil::put_var(outputFilename, "xCell", &x[0]);
     ncutil::put_var(outputFilename, "yCell", &y[0]);
     ncutil::put_var(outputFilename, "zCell", &z[0]);
+
+    ncutil::def_var(outputFilename, "idCell",
+        NC_INT, "cell ID", {"nCells"});
+
+    ncutil::put_var(outputFilename, "idCell", idCells.data());
 
     ncutil::def_var(outputFilename, "indexToCellID",
         NC_INT, "index to cell ID mapping", {"nCells"});

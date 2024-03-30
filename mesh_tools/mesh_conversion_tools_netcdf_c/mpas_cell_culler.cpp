@@ -804,6 +804,7 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
     zOld = new double[nCells];
     latOld = new double[nCells];
     lonOld = new double[nCells];
+    idCellOld = new int[nCells];
 
     xNew = new double[nCellsNew];
     yNew = new double[nCellsNew];
@@ -811,12 +812,14 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
     latNew = new double[nCellsNew];
     lonNew = new double[nCellsNew];
     idxToNew = new int[nCellsNew];
+    idCellNew = new int[nCellsNew];
 
     ncutil::get_var(inputFilename, "xCell", xOld);
     ncutil::get_var(inputFilename, "yCell", yOld);
     ncutil::get_var(inputFilename, "zCell", zOld);
     ncutil::get_var(inputFilename, "latCell", latOld);
     ncutil::get_var(inputFilename, "lonCell", lonOld);
+    ncutil::get_var(inputFilename, "idCell", idCellOld);
 
     idx_map = 0;
     for(int iCell = 0; iCell < nCells; iCell++){
@@ -826,6 +829,7 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
             zNew[idx_map] = zOld[iCell];
             latNew[idx_map] = latOld[iCell];
             lonNew[idx_map] = lonOld[iCell];
+            idCellNew[idx_map] = idCellOld[iCell];
             idxToNew[idx_map] = idx_map+1;
             idx_map++;
         }
@@ -850,6 +854,11 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
     ncutil::put_var(outputFilename, "yCell", &yNew[0]);
     ncutil::put_var(outputFilename, "zCell", &zNew[0]);
 
+    ncutil::def_var(outputFilename, "idCell",
+        NC_INT, "cell ID", {"nCells"});
+
+    ncutil::put_var(outputFilename, "idCell", &idCellNew[0]);
+
     ncutil::def_var(outputFilename, "indexToCellID",
         NC_INT, "index to cell ID mapping", {"nCells"});
 
@@ -860,6 +869,7 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
     delete[] zOld;
     delete[] latOld;
     delete[] lonOld;
+    delete[] idCellOld;
 
     delete[] xNew;
     delete[] yNew;
@@ -867,6 +877,7 @@ int mapAndOutputGridCoordinates( const string inputFilename, const string output
     delete[] latNew;
     delete[] lonNew;
     delete[] idxToNew;
+    delete[] idCellNew;
 
     //Build and write edge coordinate arrays
     xOld = new double[nEdges];
